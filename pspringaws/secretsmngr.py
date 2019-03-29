@@ -2,7 +2,7 @@
 import logging
 import os
 import boto3
-logger = logging.getLogger("summer-aws")
+logger = logging.getLogger("pspring-aws")
 from pspring import *
 
 @Bean()
