@@ -8,11 +8,11 @@ from pspring import *
 @Bean()
 class SecretsManager():
     def __init__(self):
-        self.secretName = os.environ.get("summer.aws.secretsMngr.secretName")
-        if os.environ.get("summer.aws.secretsMngr.region") != None:
-            self.region = os.environ.get("summer.aws.secretsMngr.region")
-        elif os.environ.get("summer.aws.region") != None:
-            self.region = os.environ.get("summer.aws.region")
+        self.secretName = os.environ.get("pspring.aws.secretsMngr.secretName")
+        if os.environ.get("pspring.aws.secretsMngr.region") != None:
+            self.region = os.environ.get("pspring.aws.secretsMngr.region")
+        elif os.environ.get("pspring.aws.region") != None:
+            self.region = os.environ.get("pspring.aws.region")
         else:
             self.region = "us-east-1"
         if self.secretName == None:
