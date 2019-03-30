@@ -1,0 +1,17 @@
+pspringaws/__init__.py,sha256=N_VWRH11BhTuY0DTKvNM4tw9npxU4VTxOfQ4AWD6vp0,26
+pspringaws/defaultvars.py,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+pspringaws/lambdaexceptions.py,sha256=0TCSBkxtjfnoS0vXxuGFp4cfe5aKog4ePjH1ZnYf0d4,1169
+pspringaws/lambdahandler.py,sha256=a4_e-JLqklvD4kc_Iu4-u7mQ-g7zTdAEJWDIZ5zBGKA,737
+pspringaws/pspringaws.py,sha256=SvaOUHFbywpD5mniDwZFH2Dqu_sV3veyFnl_DL5FEQU,128
+pspringaws/secretsmngr.py,sha256=brSEueAFipDKHd8NEhRlWd7r95gKBoyM0RFftnIkN1w,1002
+pspring_aws-0.0.4.dist-info/METADATA,sha256=abN9P80drylQzjw44QxLQo40CR7FKVuVPcdyCdQKuR4,334
+pspring_aws-0.0.4.dist-info/WHEEL,sha256=MTT8nte0XKevE9yJl-TwoUKDw_i34GiAL_IxFfS6kr8,93
+pspring_aws-0.0.4.dist-info/top_level.txt,sha256=SCMpc0UgG-dN3Bt2xKYsJZ1W_qcRSFC2kXAodDAOT-E,11
+pspring_aws-0.0.4.dist-info/RECORD,,
+pspring_aws-0.0.4.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+pspringaws/__pycache__/secretsmngr.cpython-36.pyc,,
+pspringaws/__pycache__/defaultvars.cpython-36.pyc,,
+pspringaws/__pycache__/lambdaexceptions.cpython-36.pyc,,
+pspringaws/__pycache__/pspringaws.cpython-36.pyc,,
+pspringaws/__pycache__/__init__.cpython-36.pyc,,
+pspringaws/__pycache__/lambdahandler.cpython-36.pyc,,
