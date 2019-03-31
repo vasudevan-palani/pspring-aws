@@ -21,7 +21,7 @@ class LambdaHandler():
 
         def logtemplate(selfObj,logObj):
             logdict=dict()
-            if type(logObj) == type(str):
+            if type(logObj) == type(""):
                 logdict.update(selfObj.logattrs)
                 logdict.update({
                     "message" : logObj
@@ -51,9 +51,28 @@ class LambdaHandler():
                 selfObj = args[0]
                 event = args[1]
                 context = args[2]
-                econtext = event.get('context')
+                econtext = event.get('requestContext')
                 requestId = str(econtext.get('requestId'))
+                traceId = event.get("headers",{}).get("X-Amzn-Trace-Id")
+                cfId = event.get("headers",{}).get("X-Amz-Cf-Id")
                 selfObj.addToLogger("requestId",requestId)
+
+                if hasattr(context,"aws_request_id"):
+                    selfObj.addToLogger("awsRequestId",context.aws_request_id)
+
+                if traceId != None:
+                    selfObj.addToLogger("X-Amzn-Trace-Id",traceId)
+
+                if cfId != None:
+                    selfObj.addToLogger("X-Amz-Cf-Id",cfId)
+
+                if str(econtext.get('requestId')) == "COLD_START_WARMER":
+                    selfObj.debug("Received cold start request")
+                    return {
+                        "statusCode" : "200",
+                        "body" : json.dumps("{}")
+                    }
+
                 response = handlerOrig(*args,**kargs)
                 return {
                     "statusCode" : "200",
