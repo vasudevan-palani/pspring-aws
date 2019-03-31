@@ -1,13 +1,27 @@
 import json
 
 class LambdaException(Exception):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
-        self.code = kargs.get("code","500")
-        self.msg = kargs.get("msg","Internal Server Error : "+str(self))
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
+        self.code = "500"
+        self.msg = "Internal Server Error : "+str(self)
+        self.payload = None
+        if len(args) > 1:
+            self.code = args[1]
+        if len(args) > 0:
+            self.msg = args[0]
+        if len(args) > 2:
+            self.payload = args[2]
+
         self.errorCode = kargs.get("errorCode")
 
     def getResponse(self):
+
+        if self.payload != None:
+            return {
+                "statusCode": self.code,
+                "body": self.payload
+            }
         return {
             "statusCode": self.code,
             "body": json.dumps({
@@ -17,26 +31,26 @@ class LambdaException(Exception):
         }
 
 class NotFoundException(LambdaException):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
         self.code="404"
 
 class UnAuthorizedException(LambdaException):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
         self.code="401"
 
 class InternalServerException(LambdaException):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
         self.code="500"
 
 class CreatedException(LambdaException):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
         self.code="201"
 
 class RedirectException(LambdaException):
-    def __init__(self,**kargs):
-        super().__init__(**kargs)
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
         self.code="301"

@@ -2,7 +2,6 @@ import boto3
 
 from .defaultvars import *
 
-dynamodb = boto3.resource("dynamodb")
 
 class DynamoDBTable():
     def __init__(self,*args,**kargs):
@@ -10,18 +9,19 @@ class DynamoDBTable():
         self.primaryKey = kargs.get("primaryKey")
         self.sortKey = kargs.get("sortKey")
         self.ttl = int(kargs.get("ttl",defaultTtl))
-        self.table = dynamodb.table(sel.tableName,region_name=region)
+        dynamodb = boto3.resource("dynamodb",region_name=region)
+        self.table = dynamodb.Table(self.tableName)
 
     def __call__(self,classObj):
-        def put(self,data):
+        def put(selfObj,data):
             self.table.put_item(Item=data)
 
-        def get(self,primaryKey,**kargs):
-            key = {
-                self.primaryKey : primaryKey
-            }
+        def get(selfObj,primaryKey,**kargs):
+            key = {}
+            key[self.primaryKey] = primaryKey
             sortKey = kargs.get(self.sortKey,None)
-            columns = kargs.get("columns",[])
+            columns = kargs.get("columns",None)
+            column = kargs.get("column",None)
             if self.sortKey != None and sortKey != None:
                 key.update({
                     self.sortKey : sortKey
@@ -31,9 +31,15 @@ class DynamoDBTable():
             responseData = {}
             item = response.get("Item")
             if item != None:
-                for column in columns:
-                    responseData.update({
-                        column : item.get("column")
-                    })
-                return responseData
+                if columns != None:
+                    for column in columns:
+                        responseData.update({
+                            column : item.get(column)
+                        })
+                    return responseData
+                if column != None:
+                    return item.get(column)
             return None
+        classObj.put = put
+        classObj.get = get
+        return classObj
