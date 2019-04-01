@@ -1,5 +1,4 @@
 from .defaultvars import *
-from pspring import PayloadException
 from .lambdaexceptions import *
 import json
 import logging
@@ -80,9 +79,9 @@ class LambdaHandler():
                 }
             except LambdaException as le:
                 return le.getResponse()
-            except PayloadException as pe:
-                return LambdaException(str(pe),pe.statusCode,pe.response).getResponse()
             except Exception as e:
+                if hasattr(e,"statusCode") and hasattr(e,"response"):
+                    return LambdaException(str(e),e.statusCode,e.response).getResponse()
                 return LambdaException(str(e)).getResponse()
 
         classObj.handler = handler
