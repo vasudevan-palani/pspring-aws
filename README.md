@@ -38,6 +38,11 @@ Below exceptions are available from this framework
 Example:
 
 ```python
+
+from pspring import *
+from pspringaws import *
+
+
 @LambdaHandler()
 class MyHandler():
     @Autowired()
