@@ -8,9 +8,13 @@ from pspring import *
 
 @Bean()
 class SecretsManager():
-    def __init__(self):
-        self.secretName = secretName
-        self.region = region
+    def __init__(self,*args,**kargs):
+        self.secretName = kargs.get("name")
+        if self.secretName == None:
+            self.secretName = secretName
+        self.region = kargs.get("region")
+        if self.region == None:
+            self.region = region
 
         if self.secretName == None:
             logger.error("secretName required")
