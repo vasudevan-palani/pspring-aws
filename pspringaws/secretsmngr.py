@@ -55,3 +55,6 @@ class SecretValue():
                 if column != None:
                     return item.get(column)
             return response
+
+        classObj.getSecretValue = getSecretValue
+        return classObj

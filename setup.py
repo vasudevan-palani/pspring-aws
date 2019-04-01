@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pspring-aws',
-    version='0.0.11',
+    version='0.0.12',
     license='TBD',
     author='Vasudevan Palani',
     author_email='vasudevan.palani@gmail.com',
