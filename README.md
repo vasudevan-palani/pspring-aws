@@ -35,6 +35,25 @@ Below exceptions are available from this framework
 - CreatedException
 - RedirectException
 
+Example:
+
+```python
+@LambdaHandler()
+class MyHandler():
+    @Autowired()
+    def __init__(self,customerbackend:CustomerBackend, cache:DataCache):
+        self.customerbackend = customerbackend
+        self.cache = cache
+        
+    def handler(self,event,context):
+      return self.customerbackend(...)
+
+context.initialize()
+newhandler = MyHandler()
+def handler(event,context):
+    return newhandler.handler(event,context)
+```
+
  To do:
  
  * Support Lambda integration types
