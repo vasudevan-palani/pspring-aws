@@ -1,4 +1,3 @@
-from .defaultvars import *
 from .lambdaexceptions import *
 import json
 import logging

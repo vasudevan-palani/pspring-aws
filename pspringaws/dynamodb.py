@@ -1,17 +1,22 @@
 import boto3
-
-from .defaultvars import *
-
 import time
+
+from pspring import Configuration
+
+import logging
+
+logger = logging.getLogger(__name__)
+config = Configuration.getConfig(__name__)
 
 class DynamoDBTable():
     def __init__(self,*args,**kargs):
         self.tableName = kargs.get("tableName")
         self.primaryKey = kargs.get("primaryKey")
         self.sortKey = kargs.get("sortKey")
-        self.ttlcolumnname = kargs.get("ttlColumnName","ttl")
-        self.ttl = int(kargs.get("ttl",defaultTtl))
-        dynamodb = boto3.resource("dynamodb",region_name=region)
+        self.region = kargs.get("region") or config.getProperty("region")
+        self.ttlcolumnname = kargs.get("ttlColumnName") or config.getProperty("ttlColumnName") or "ttl"
+        self.ttl = int(kargs.get("ttl") or config.getProperty("ttl") or "3600")
+        dynamodb = boto3.resource("dynamodb",region_name=self.region)
         self.table = dynamodb.Table(self.tableName)
 
     def __call__(self,classObj):
@@ -29,7 +34,6 @@ class DynamoDBTable():
                 key.update({
                     self.sortKey : sortKey
                 })
-
             response = self.table.get_item(Key=key)
             responseData = {}
             item = response.get("Item")

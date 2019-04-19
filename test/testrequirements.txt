@@ -1,0 +1,3 @@
+pspring
+realtime-aws-secretsmngr
+paho-mqtt==1.4.0

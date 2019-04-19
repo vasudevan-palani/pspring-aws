@@ -1,13 +1,15 @@
 
-import os
+import os, logging, json
 import boto3
-from .defaultvars import secretId,region,logger
 from pspring import *
+
+logger = logging.getLogger(__name__)
+config = Configuration.getConfig(__name__)
 
 class SecretsManager():
     def __init__(self,*args,**kargs):
-        self.secretId = kargs.get("secretId") if kargs.get("secretId") else secretId
-        self.region = kargs.get("region") if kargs.get("region") else region
+        self.secretId = kargs.get("secretId") or config.getProperty("secretId")
+        self.region = kargs.get("region") or config.getProperty("region")
 
         if(self.secretId == None or self.region == None):
             logger.error("secretId required")
@@ -23,15 +25,16 @@ class SecretsManager():
         return self.client.get_secret_value(SecretId=self.secretId)
 
     def getSecretValue(self):
-        return self.secretResponse
+        secretString = self.secretResponse.get("SecretString")
+        return json.loads(secretString)
 
 
 class SecretValue():
     def __init__(self,*args,**kargs):
-        self.secretId = kargs.get("secretId") if kargs.get("secretId") else secretId
-        self.region = kargs.get("region") if kargs.get("region") else region
-        self.column = kargs.get("column")
-        self.columns = kargs.get("columns")
+        self.secretId = kargs.get("secretId") or config.getProperty("secretId")
+        self.region = kargs.get("region") or config.getProperty("region")
+        self.column = kargs.get("column") or config.getProperty("column")
+        self.columns = kargs.get("columns") or config.getProperty("columns")
 
         if(self.secretId == None or self.region == None):
             logger.error("secretId required")

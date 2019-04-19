@@ -2,3 +2,9 @@ build/
 test/deps/
 dist/
 *egg*
+build/
+dist/
+*egg*
+test/.tmp/
+.pytest_cache/
+__pycache__/
