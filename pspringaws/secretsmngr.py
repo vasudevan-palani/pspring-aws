@@ -1,30 +1,26 @@
 
-import logging
 import os
 import boto3
-logger = logging.getLogger("pspring-aws")
-from .defaultvars import *
+from .defaultvars import secretId,region,logger
 from pspring import *
 
-@Bean()
 class SecretsManager():
     def __init__(self,*args,**kargs):
-        self.secretName = kargs.get("name")
-        if self.secretName == None:
-            self.secretName = secretName
-        self.region = kargs.get("region")
-        if self.region == None:
-            self.region = region
+        self.secretId = kargs.get("secretId") if kargs.get("secretId") else secretId
+        self.region = kargs.get("region") if kargs.get("region") else region
 
-        if self.secretName == None:
-            logger.error("secretName required")
-        logger.info("Getting secret : "+self.secretName)
+        if(self.secretId == None or self.region == None):
+            logger.error("secretId required")
+            raise Exception("configuration error")
+
+        logger.info("Getting secret : "+self.secretId)
+
         self.client = boto3.client('secretsmanager',region_name=self.region)
         self.secretResponse = self.getSecret()
         logger.info("Secret status : OK")
 
     def getSecret(self):
-        return self.client.get_secret_value(SecretId=self.secretName)
+        return self.client.get_secret_value(SecretId=self.secretId)
 
     def getSecretValue(self):
         return self.secretResponse
@@ -32,19 +28,22 @@ class SecretsManager():
 
 class SecretValue():
     def __init__(self,*args,**kargs):
-        self.secretName = kargs.get("name")
-        self.region = kargs.get("region")
-        if self.region == None:
-            self.region = region
+        self.secretId = kargs.get("secretId") if kargs.get("secretId") else secretId
+        self.region = kargs.get("region") if kargs.get("region") else region
         self.column = kargs.get("column")
         self.columns = kargs.get("columns")
+
+        if(self.secretId == None or self.region == None):
+            logger.error("secretId required")
+            raise Exception("configuration error")
+
         self.client = boto3.client('secretsmanager',region_name=self.region)
 
     def __call__(self,classObj):
         def getSecretValue(selfObj):
-            logger.info("Getting secret : "+self.secretName)
+            logger.info("Getting secret : "+self.secretId)
             self.secretResponse = self.getSecret()
-            response = self.client.get_secret_value(SecretId=self.secretName)
+            response = self.client.get_secret_value(SecretId=self.secretId)
             logger.info("Secret status : OK")
             responseData = {}
             columns = self.columns
