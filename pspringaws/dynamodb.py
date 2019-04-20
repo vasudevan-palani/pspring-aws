@@ -21,7 +21,8 @@ class DynamoDBTable():
 
     def __call__(self,classObj):
         def put(selfObj,data):
-            data[self.ttlcolumnname] = int(time.time())+self.ttl
+            if(data.get(self.ttlcolumnname) == None):
+                data[self.ttlcolumnname] = int(time.time())+self.ttl
             self.table.put_item(Item=data)
 
         def get(selfObj,primaryKey,**kargs):
@@ -46,7 +47,7 @@ class DynamoDBTable():
                     return responseData
                 if column != None:
                     return item.get(column)
-            return None
+            return item
         classObj.put = put
         classObj.get = get
         return classObj
