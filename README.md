@@ -35,6 +35,63 @@ Below exceptions are available from this framework
 - CreatedException
 - RedirectException
 
+* `RealTimeSecretsMgrConfigProvider`
+
+  This along with https://github.com/vasudevan-palani/appsync-client.git works as a real time secrets manager ( what this means is, you will get notified about the changes to secrets mngr's value as a push event )
+
+  ```python
+    from pspring import Configuration
+
+    config = Configuration.getConfig(__name__)
+
+    Configuration.initializer([
+      RealTimeSecretsMgrConfigProvider(secretId="mysecretId",region="us-east-1")
+    ])
+
+  ```
+
+* `SecretsMgrConfigProvider`
+
+  ConfigurationProvider for secrets manager in aws to work alongside pspring.Configuration
+  
+  ```python
+      from pspring import Configuration
+
+      config = Configuration.getConfig(__name__)
+
+      Configuration.initializer([
+        SecretsMgrConfigProvider(secretId="mysecretId",region="us-east-1")
+      ])
+
+    ```
+
+
+* `SecretsManager`
+
+  Utility class to interact with aws secrets manager encapsulating the boiler plate code
+  ```python
+    from pspringaws import SecretsManager
+
+    secretsmngr = SecretsManager(secretId="mysecretId")
+
+    secretsmngr.getSecretValue()
+
+  ```
+
+* `DynamoDBTable`
+
+  Utility class to interact with aws dynamodb encapsulating the boiler plate code
+  ```python
+    from pspringaws import DynamoDBTable
+
+    secretsmngr = DynamoDBTable(tableName="mytable",primaryKey="primaryKey",sortKey="sortKey")
+
+    item = secretsmngr.get("primaryKeyValue")
+
+    item = secretsmngr.put(primaryKeyValue,item)
+
+  ```
+
 Example:
 
 ```python

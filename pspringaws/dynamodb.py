@@ -14,8 +14,8 @@ class DynamoDBTable():
         self.primaryKey = kargs.get("primaryKey")
         self.sortKey = kargs.get("sortKey")
         self.region = kargs.get("region") or config.getProperty("region")
-        self.ttlcolumnname = kargs.get("ttlColumnName") or config.getProperty("ttlColumnName") or "ttl"
-        self.ttl = int(kargs.get("ttl") or config.getProperty("ttl") or "3600")
+        self.ttlcolumnname = kargs.get("ttlColumnName") or config.getProperty("ttlColumnName")
+        self.ttl = int(kargs.get("ttl") or config.getProperty("ttl"))
         dynamodb = boto3.resource("dynamodb",region_name=self.region)
         self.table = dynamodb.Table(self.tableName)
 
