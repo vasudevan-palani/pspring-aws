@@ -1,3 +1,4 @@
 pspring
 realtime-aws-secretsmngr
 paho-mqtt==1.4.0
+appsync-client==0.0.12

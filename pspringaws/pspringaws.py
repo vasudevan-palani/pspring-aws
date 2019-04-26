@@ -5,3 +5,5 @@ from .defaultvars import *
 from .dynamodb import *
 from .realtimesecretsmngrconfigprovider import *
 from .secretsmngrconfigprovider import *
+from .s3configprovider import *
+from .realtimes3configprovider import *
