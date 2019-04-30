@@ -37,3 +37,13 @@ def test_s3configprovider():
 def test_realtimes3configprovider():
     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="XXX",objectKey="XXX")
     assert configProvider.getProperty("XXX")!=None
+
+def test_scheduleds3configprovider():
+    configProvider = pspringaws.ScheduledS3ConfigProvider(bucketId="XXX",objectKey="XXX",period="5")
+    time.sleep(50)
+    assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
+
+def test_scheduledsecretmngrconfigprovider():
+    configProvider = pspringaws.ScheduledSecretsMngrConfigProvider(secretId="XXX",period="5")
+    time.sleep(50)
+    assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
