@@ -25,9 +25,15 @@ class ScheduledS3ConfigProvider(ConfigurationProvider):
         self.response = {}
         self.subscriptions=[]
         
-        self.getValue()
+        self.loop()
 
-    def getValue(self):
+    def loop(self):
+        self.refresh()
+        thread = threading.Timer(self.period,self.loop)
+        thread.daemon = True
+        thread.start()
+    
+    def refresh(self):
         logger.info("Getting value")
         client = boto3.client("s3",region_name=self.region)
         file = client.get_object(Bucket=self.bucketId,Key=self.objectKey)
@@ -39,10 +45,6 @@ class ScheduledS3ConfigProvider(ConfigurationProvider):
             logger.error("Error while loading json..")
         self.publish()
 
-        thread = threading.Timer(self.period,self.getValue)
-        thread.daemon = True
-        thread.start()
-    
     def publish(self):
         for subscription in self.subscriptions:
             subscription()

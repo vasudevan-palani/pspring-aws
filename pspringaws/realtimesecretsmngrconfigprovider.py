@@ -21,6 +21,9 @@ class RealTimeSecretsMgrConfigProvider(ConfigurationProvider):
         self.response = json.loads(response)
         self.publish()
 
+    def refresh(self):
+        pass
+
     def publish(self):
         for subscription in self.subscriptions:
             subscription()

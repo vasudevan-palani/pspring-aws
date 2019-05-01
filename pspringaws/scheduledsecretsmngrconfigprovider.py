@@ -25,9 +25,16 @@ class ScheduledSecretsMngrConfigProvider(ConfigurationProvider):
         self.subscriptions=[]
         self.client = boto3.client('secretsmanager',region_name=self.region)
         
-        self.getValue()
+        self.loop()
 
-    def getValue(self):
+    def loop(self):
+        self.refresh()
+
+        thread = threading.Timer(self.period,self.loop)
+        thread.daemon = True
+        thread.start()
+    
+    def refresh(self):
         logger.info("Getting value")
         
         secretResponse = self.client.get_secret_value(SecretId=self.secretId)
@@ -39,10 +46,6 @@ class ScheduledSecretsMngrConfigProvider(ConfigurationProvider):
             logger.error("Error while loading json..")
         self.publish()
 
-        thread = threading.Timer(self.period,self.getValue)
-        thread.daemon = True
-        thread.start()
-    
     def publish(self):
         for subscription in self.subscriptions:
             subscription()

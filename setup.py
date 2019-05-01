@@ -5,7 +5,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 setup(
     name='pspring-aws',
-    version='0.0.22',
+    version='0.0.23',
     license='TBD',
     author='Vasudevan Palani',
     author_email='vasudevan.palani@gmail.com',

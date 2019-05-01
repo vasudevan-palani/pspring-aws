@@ -1,6 +1,6 @@
 from .lambdaexceptions import *
 import json
-import logging
+import logging, traceback
 
 logger = logging.getLogger("pspring-aws")
 
@@ -81,7 +81,7 @@ class LambdaHandler():
             except Exception as e:
                 if hasattr(e,"statusCode") and hasattr(e,"response"):
                     return LambdaException(str(e),e.statusCode,e.response).getResponse()
-                return LambdaException(str(e)).getResponse()
+                return LambdaException(traceback.format_exc()+str(e)).getResponse()
 
         classObj.handler = handler
         classObj.__init__ = constructor
