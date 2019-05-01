@@ -40,6 +40,11 @@ class UnAuthorizedException(LambdaException):
         super().__init__(*args,**kargs)
         self.code="401"
 
+class Forbidden(LambdaException):
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
+        self.code="403"
+
 class InternalServerException(LambdaException):
     def __init__(self,*args,**kargs):
         super().__init__(*args,**kargs)
@@ -49,6 +54,21 @@ class CreatedException(LambdaException):
     def __init__(self,*args,**kargs):
         super().__init__(*args,**kargs)
         self.code="201"
+
+class MethodNotAllowed(LambdaException):
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
+        self.code="405"
+
+class BadRequest(LambdaException):
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
+        self.code="400"
+
+class UnSupportedMediaType(LambdaException):
+    def __init__(self,*args,**kargs):
+        super().__init__(*args,**kargs)
+        self.code="415"
 
 class RedirectException(LambdaException):
     def __init__(self,*args,**kargs):
