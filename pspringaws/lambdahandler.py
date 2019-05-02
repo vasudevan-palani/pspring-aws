@@ -72,10 +72,13 @@ class LambdaHandler():
                     }
 
                 response = handlerOrig(*args,**kargs)
-                return {
-                    "statusCode" : "200",
-                    "body" : json.dumps(response)
+                finalresponse = {
+                    "statusCode" : "200"
                 }
+                finalresponse.update(response)
+                
+                return finalresponse
+
             except LambdaException as le:
                 return le.getResponse()
             except Exception as e:
