@@ -9,3 +9,5 @@ from .s3configprovider import *
 from .realtimes3configprovider import *
 from .scheduleds3configprovider import *
 from .scheduledsecretsmngrconfigprovider import *
+from .dynamodbconfigprovider import *
+from .realtimedynamodbconfigprovider import *

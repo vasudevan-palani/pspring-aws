@@ -21,7 +21,7 @@ class DynamoDBTable():
 
     def __call__(self,classObj):
         def put(selfObj,data):
-            if(data.get(self.ttlcolumnname) == None):
+            if(self.ttlcolumnname != None and data.get(self.ttlcolumnname) == None):
                 data[self.ttlcolumnname] = int(time.time())+self.ttl
             self.table.put_item(Item=data)
 

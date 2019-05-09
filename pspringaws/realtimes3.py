@@ -21,7 +21,6 @@ class RealTimeS3():
         if(self.bucketId == None or self.objectKey == None or self.region == None):
             logger.error("region,bucketId and objectKey required")
             raise Exception("configuration error")
-        print(self.apiId)
         self.client = AppSyncClient(region=self.region,apiId=self.apiId)
 
     def getValue(self):
