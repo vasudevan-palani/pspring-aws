@@ -5,10 +5,12 @@ import os
 import time
 
 os.environ["pspringaws.region"]="us-east-2"
-os.environ["pspringaws.apiId"]="XXX"
+os.environ["pspringaws.apiId"]="jc2fibip45cidbkhqcxyzvgu5i"
 secretId = "XXX"
 
 import pspringaws
+from appsyncclient import AppSyncClient
+import json
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -30,15 +32,35 @@ logging.basicConfig(level=logging.DEBUG)
 #     response = table.get("test",column="firstname",scope="test")
 #     assert response=="vas"
 
+# client = AppSyncClient(region="us-east-2",apiId="jc2fibip45cidbkhqcxyzvgu5i")
+# datajson={
+#     "data" : "\"",
+#     "name" : "test5",
+#     "scope" : "test5"
+# }
+# data=json.dumps(datajson)
+# data = data.replace('\\"','"')
+# data = data.replace("\"","\\\"")
+# id="arn:aws:dynamodb:::dev-token-cache:test5:test5"
+# query = json.dumps({"query": "mutation {\n  updateResource(id:\""+id+"\",data:\""+data+"\") {\n    id\n    data\n  }\n}\n"})
+# print(query)
+# # query = "{\"query\": \"mutation {\\n  updateResource(id:\\\"arn:aws:dynamodb:::dev-token-cache:test5:test5\\\",data:\\\"{\\\\\\\"data\\\\\\\": \\\\\\\"{\\\\\\\\\\\"firstname\\\\\\\\\\\":\\\\\\\\\\\"vasudevn\\\\\\\\\\\"}\\\\\\\", \\\\\\\"scope\\\\\\\": \\\\\\\"test5\\\\\\\", \\\\\\\"name\\\\\\\": \\\\\\\"test5\\\\\\\"}\\\") {\\n    id\\n    data\\n  }\\n}\\n\"}"
+# # print(query)
+# def secretcallback(client, userdata, msg):
+#     logger.debug("New data received : "+str(msg))
+#     callback(json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data"))
+
+# response = client.execute(data=query,callback=secretcallback)
+# print(response)
 def test_realtimedynamoconfigprovider():
     configProvider = pspringaws.RealTimeDynamodbConfigProvider(
         tableName="XXX",
         primaryKey="XXX",
-        primaryKeyName="XXX",
-        sortKeyName="XXX",
-        sortKey="XX",
+        primaryKeyName="name",
+        sortKeyName="scope",
+        sortKey="XXX",
         configColumnName="data",
-        apiId="XXX"
+        apiId="XXXX"
     )
     time.sleep(20)
     assert configProvider.getProperty("firstname") == "vasudevan"
@@ -59,8 +81,9 @@ def test_realtimedynamoconfigprovider():
 #     assert configProvider.getProperty("XXX")!=None
 
 # def test_realtimes3configprovider():
-#     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="XXX",objectKey="XXX")
-#     assert configProvider.getProperty("XXX")!=None
+#     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="sooproxyapi.json")
+#     time.sleep(200)
+#     assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
 
 # def test_scheduleds3configprovider():
 #     configProvider = pspringaws.ScheduledS3ConfigProvider(bucketId="XXX",objectKey="XXX",period="5")

@@ -20,6 +20,7 @@ class RealTimeS3ConfigProvider(ConfigurationProvider):
     def eventCallBack(self,response):
         logger.info("Received updated data "+str(response))
         self.response = json.loads(response)
+        logger.info("After json")
         self.publish()
 
     def refresh(self):
