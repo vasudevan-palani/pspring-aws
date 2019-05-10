@@ -19,15 +19,32 @@ class RealTimeDynamodbConfigProvider(ConfigurationProvider):
         self.region = kargs.get("region") or config.getProperty("region")
         self.configColumnName = kargs.get("configColumnName") or config.getProperty("configColumnName")
         self.apiId = kargs.get("apiId") or config.getProperty("apiId")
+        self.tableAsConfig = kargs.get("tableAsConfig") or config.getProperty("tableAsConfig")
 
         self.dynamodbclient = RealTimeDynamoDB(**kargs)
         self.dynamodbclient.subscribe(self.eventCallBack)
+        self.response = {}
 
     def eventCallBack(self,response):
         #response = response.replace("\"","\\\"")
         logger.info("Received updated data "+str(response))
-        self.response = json.loads(response)
-        logger.info("After response")
+        
+        if self.tableAsConfig == "True":
+            try:
+                self.response.update({
+                    response.get(self.primaryKeyName) : {
+                        response.get(self.sortKeyName) : response
+                    }
+                })
+            except Exception as e:
+                logger.error(str(e))
+        else:
+            try:
+                self.response = response
+            except Exception as e:
+                logger.error(str(e))
+
+        logger.info(self.response)
         self.publish()
 
     def refresh(self):

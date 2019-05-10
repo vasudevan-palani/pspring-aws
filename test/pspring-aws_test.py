@@ -33,22 +33,23 @@ logging.basicConfig(level=logging.DEBUG)
 #     response = table.get("test",column="firstname",scope="test")
 #     assert response=="vas"
 
-# def test_realtimedynamoconfigprovider():
-#     configProvider = pspringaws.RealTimeDynamodbConfigProvider(
-#         tableName="XXXX",
-#         primaryKey="test5",
-#         primaryKeyName="name",
-#         sortKeyName="scope",
-#         sortKey="test5",
-#         configColumnName="data",
-#         apiId="XXX"
-#     )
-#     time.sleep(20)
-#     assert configProvider.getProperty("firstname") == "vasudevan"
+def test_realtimedynamoconfigprovider():
+    configProvider = pspringaws.RealTimeDynamodbConfigProvider(
+        tableName="XXX",
+        primaryKey="test5",
+        primaryKeyName="name",
+        sortKeyName="scope",
+        sortKey="test5",
+        configColumnName="data",
+        tableAsConfig="True",
+        apiId="XXX"
+    )
+    time.sleep(200)
+    assert configProvider.getProperty("firstname") == "vasudevan"
 
 # def test_dynamoconfigprovider():
 #     configProvider = pspringaws.DynamodbConfigProvider(
-#         tableName="XXX",
+        # tableName="XXX",
 #         primaryKey="XXX",
 #         primaryKeyName="XX",
 #         sortKeyName="XXX",

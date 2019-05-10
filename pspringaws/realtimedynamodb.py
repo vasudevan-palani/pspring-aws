@@ -23,21 +23,25 @@ class RealTimeDynamoDB():
         self.region = kargs.get("region") or config.getProperty("region")
         self.configColumnName = kargs.get("configColumnName") or config.getProperty("configColumnName")
 
-        @DynamoDBTable(
-            tableName=self.tableName,
-            primaryKey=self.primaryKeyName,
-            sortKey=self.sortKeyName,
-            region=self.region
-        )
-        class DynamoTable():
-            pass
-        self.table = DynamoTable()
+        self.tableAsConfig = kargs.get("tableAsConfig") or config.getProperty("tableAsConfig") or "False"
+
+        if self.tableAsConfig == "False":
+            @DynamoDBTable(
+                tableName=self.tableName,
+                primaryKey=self.primaryKeyName,
+                sortKey=self.sortKeyName,
+                region=self.region
+            )
+            class DynamoTable():
+                pass
+            self.table = DynamoTable()
+
         self.config = {}
 
         self.apiId = kargs.get("apiId") or config.getProperty("apiId")
 
-        if(self.tableName == None or self.primaryKey == None or self.sortKey == None):
-            logger.error("tableName,primaryKey and sortKey required")
+        if(self.tableName == None or (self.tableAsConfig == "False" and (self.primaryKey == None or self.sortKey == None))):
+            logger.error("mandatory fields missing")
             raise Exception("configuration error")
         self.client = AppSyncClient(region=self.region,apiId=self.apiId)
 
@@ -46,11 +50,16 @@ class RealTimeDynamoDB():
         return str(dynamoContent)
 
     def subscribe(self,callback):
-        contents = self.getValue()
-        callback(contents)
+        if self.tableAsConfig == "False":
+            contents = self.getValue()
+            callback(contents)
         id = "arn:aws:dynamodb:::"+self.tableName+":"+self.primaryKey
         if self.sortKey != None:
             id = id + ":"+self.sortKey
+
+        if self.tableAsConfig == "True":
+            id = "arn:aws:dynamodb:::"+self.tableName
+
         query = json.dumps({"query": "subscription {\n  updatedResource(id:\""+id+"\") {\n    id\n    data\n  }\n}\n"})
 
         def secretcallback(client, userdata, msg):
@@ -61,7 +70,10 @@ class RealTimeDynamoDB():
                 try:
                     callbackdata = base64.b64decode(callbackdatab64.encode())
                     logger.debug(f"decoded successfully {callbackdata}")
-                    callbackdatacolumn = json.loads(callbackdata.decode()).get(self.configColumnName)
+                    if self.tableAsConfig == "False":
+                        callbackdatacolumn = json.loads(callbackdata.decode()).get(self.configColumnName)
+                    else:
+                        callbackdatacolumn = json.loads(callbackdata.decode())
                 except Exception as e:
                     logger.error(str(e))
                 
