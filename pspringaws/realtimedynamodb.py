@@ -4,6 +4,7 @@ import os
 import json
 
 import logging
+import base64
 
 from pspring import Configuration
 from .dynamodb import DynamoDBTable
@@ -54,12 +55,17 @@ class RealTimeDynamoDB():
 
         def secretcallback(client, userdata, msg):
             logger.debug("New data received : "+str(msg))
-            callbackdata = json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data")
+            callbackdatab64 = json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data")
+            logger.debug(callbackdatab64)
             if ( self.configColumnName != None ):
-                callbackdata = callbackdata.replace("\"{","{")
-                callbackdata = callbackdata.replace("}\"","}")
-                callbackdata = json.loads(callbackdata).get(self.configColumnName)
+                try:
+                    callbackdata = base64.b64decode(callbackdatab64.encode())
+                    logger.debug(f"decoded successfully {callbackdata}")
+                    callbackdatacolumn = json.loads(callbackdata.decode()).get(self.configColumnName)
+                except Exception as e:
+                    logger.error(str(e))
+                
 
-            callback(callbackdata)
+            callback(callbackdatacolumn)
 
         response = self.client.execute(data=query,callback=secretcallback)

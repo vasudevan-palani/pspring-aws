@@ -32,38 +32,18 @@ logging.basicConfig(level=logging.DEBUG)
 #     response = table.get("test",column="firstname",scope="test")
 #     assert response=="vas"
 
-# client = AppSyncClient(region="us-east-2",apiId="jc2fibip45cidbkhqcxyzvgu5i")
-# datajson={
-#     "data" : "\"",
-#     "name" : "test5",
-#     "scope" : "test5"
-# }
-# data=json.dumps(datajson)
-# data = data.replace('\\"','"')
-# data = data.replace("\"","\\\"")
-# id="arn:aws:dynamodb:::dev-token-cache:test5:test5"
-# query = json.dumps({"query": "mutation {\n  updateResource(id:\""+id+"\",data:\""+data+"\") {\n    id\n    data\n  }\n}\n"})
-# print(query)
-# # query = "{\"query\": \"mutation {\\n  updateResource(id:\\\"arn:aws:dynamodb:::dev-token-cache:test5:test5\\\",data:\\\"{\\\\\\\"data\\\\\\\": \\\\\\\"{\\\\\\\\\\\"firstname\\\\\\\\\\\":\\\\\\\\\\\"vasudevn\\\\\\\\\\\"}\\\\\\\", \\\\\\\"scope\\\\\\\": \\\\\\\"test5\\\\\\\", \\\\\\\"name\\\\\\\": \\\\\\\"test5\\\\\\\"}\\\") {\\n    id\\n    data\\n  }\\n}\\n\"}"
-# # print(query)
-# def secretcallback(client, userdata, msg):
-#     logger.debug("New data received : "+str(msg))
-#     callback(json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data"))
-
-# response = client.execute(data=query,callback=secretcallback)
-# print(response)
-def test_realtimedynamoconfigprovider():
-    configProvider = pspringaws.RealTimeDynamodbConfigProvider(
-        tableName="XXX",
-        primaryKey="XXX",
-        primaryKeyName="name",
-        sortKeyName="scope",
-        sortKey="XXX",
-        configColumnName="data",
-        apiId="XXXX"
-    )
-    time.sleep(20)
-    assert configProvider.getProperty("firstname") == "vasudevan"
+# def test_realtimedynamoconfigprovider():
+#     configProvider = pspringaws.RealTimeDynamodbConfigProvider(
+#         tableName="dev-token-cache",
+#         primaryKey="test5",
+#         primaryKeyName="name",
+#         sortKeyName="scope",
+#         sortKey="test5",
+#         configColumnName="data",
+#         apiId="jc2fibip45cidbkhqcxyzvgu5i"
+#     )
+#     time.sleep(20)
+#     assert configProvider.getProperty("firstname") == "vasudevan"
 
 # def test_dynamoconfigprovider():
 #     configProvider = pspringaws.DynamodbConfigProvider(
