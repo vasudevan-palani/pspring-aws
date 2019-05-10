@@ -5,7 +5,7 @@ import os
 import time
 
 os.environ["pspringaws.region"]="us-east-2"
-os.environ["pspringaws.apiId"]="jc2fibip45cidbkhqcxyzvgu5i"
+os.environ["pspringaws.apiId"]="XX"
 secretId = "XXX"
 
 import pspringaws
@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # def test_realtimesecretmngr():
 #     configProvider = pspringaws.RealTimeSecretsMgrConfigProvider(secretId=secretId)
+#     time.sleep(200)
 #     assert configProvider.getProperty("XX")==str(3600)
 
 # def test_secretmngr():
@@ -34,13 +35,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 # def test_realtimedynamoconfigprovider():
 #     configProvider = pspringaws.RealTimeDynamodbConfigProvider(
-#         tableName="dev-token-cache",
+#         tableName="XXXX",
 #         primaryKey="test5",
 #         primaryKeyName="name",
 #         sortKeyName="scope",
 #         sortKey="test5",
 #         configColumnName="data",
-#         apiId="jc2fibip45cidbkhqcxyzvgu5i"
+#         apiId="XXX"
 #     )
 #     time.sleep(20)
 #     assert configProvider.getProperty("firstname") == "vasudevan"
@@ -61,16 +62,16 @@ logging.basicConfig(level=logging.DEBUG)
 #     assert configProvider.getProperty("XXX")!=None
 
 # def test_realtimes3configprovider():
-#     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="sooproxyapi.json")
+#     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="XXX",objectKey="XXX.json")
 #     time.sleep(200)
-#     assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
+#     assert configProvider.getProperty("XXX")!=None
 
 # def test_scheduleds3configprovider():
 #     configProvider = pspringaws.ScheduledS3ConfigProvider(bucketId="XXX",objectKey="XXX",period="5")
 #     time.sleep(50)
-#     assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
+#     assert configProvider.getProperty("XXX")!=None
 
 # def test_scheduledsecretmngrconfigprovider():
 #     configProvider = pspringaws.ScheduledSecretsMngrConfigProvider(secretId="XXX",period="5")
 #     time.sleep(50)
-#     assert configProvider.getProperty("sooproxyapi.apiconfig")!=None
+#     assert configProvider.getProperty("XXXX")!=None

@@ -3,7 +3,7 @@ from appsyncclient import AppSyncClient
 import os
 import json
 
-import logging
+import logging, base64
 
 from pspring import Configuration
 
@@ -38,6 +38,14 @@ class RealTimeS3():
 
         def secretcallback(client, userdata, msg):
             logger.debug("New data received : "+str(msg))
-            callback(json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data"))
 
+            callbackdatab64 = json.loads(msg.payload).get("data",{}).get("updatedResource",{}).get("data")
+            logger.debug(callbackdatab64)
+            try:
+                callbackdata = base64.b64decode(callbackdatab64.encode("utf-8"))
+                logger.debug(f"decoded successfully {callbackdata}")
+                callback(callbackdata.decode("utf-8"))
+            except Exception as e:
+                logger.error(str(e))
+                
         response = self.client.execute(data=query,callback=secretcallback)
