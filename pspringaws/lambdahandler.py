@@ -82,9 +82,10 @@ class LambdaHandler():
             except LambdaException as le:
                 return le.getResponse()
             except Exception as e:
+                logger.error(traceback.format_exc()+str(e))
                 if hasattr(e,"statusCode") and hasattr(e,"response"):
                     return LambdaException(str(e),e.statusCode,e.response).getResponse()
-                return LambdaException(traceback.format_exc()+str(e)).getResponse()
+                return LambdaException(str(e)).getResponse()
 
         classObj.handler = handler
         classObj.__init__ = constructor
