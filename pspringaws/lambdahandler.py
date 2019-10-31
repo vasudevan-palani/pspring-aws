@@ -8,6 +8,7 @@ class LambdaHandler():
 
     def __init__(self,*args,**kargs):
         self.type = kargs.get("type","proxy")
+        self.corsHeaders = kargs.get("corsheaders")
 
     def __call__(self,classObj):
         handlerOrig = classObj.handler
@@ -45,6 +46,7 @@ class LambdaHandler():
             })
 
         def handler(*args,**kargs):
+            finalresponse = None
             try:
                 selfObj = args[0]
                 event = args[1]
@@ -80,12 +82,19 @@ class LambdaHandler():
                 return finalresponse
 
             except LambdaException as le:
-                return le.getResponse()
+                 finalresponse = le.getResponse()
             except Exception as e:
                 logger.error(traceback.format_exc()+str(e))
                 if hasattr(e,"statusCode") and hasattr(e,"response"):
-                    return LambdaException(str(e),e.statusCode,e.response).getResponse()
-                return LambdaException(str(e)).getResponse()
+                    finalresponse =  LambdaException(str(e),e.statusCode,e.response).getResponse()
+                else:
+                    finalresponse =  LambdaException(str(e)).getResponse()
+
+            if(self.corsHeaders != None and type(self.corsHeaders) == type({})):
+                headers = finalresponse.get("headers",{})
+                headers.update(self.corsHeaders)
+                finalresponse.update({"headers" : headers})
+            return finalresponse
 
         classObj.handler = handler
         classObj.__init__ = constructor
