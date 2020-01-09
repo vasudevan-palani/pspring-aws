@@ -1,6 +1,7 @@
 from pspring import ConfigurationProvider, Configuration
 import logging,json
-
+import yaml
+import os
 import boto3
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,16 @@ class S3ConfigProvider(ConfigurationProvider):
         file = client.get_object(Bucket=self.bucketId,Key=self.objectKey)
         filecontent = file.get("Body").read().decode("utf-8")
         try:
-            self.config = json.loads(str(filecontent))
+            extn = os.path.splitext(self.objectKey)[1]
+
+            if extn and extn == '.json':
+                self.config = json.loads(str(filecontent))
+            elif extn and extn in ['.yml', '.yaml']:
+                self.config = yaml.safe_load(filecontent)
+            else:
+                logger.error('File type {} not supported.'.format(extn))
+                raise Exception('File type {} not supported.'.format(extn))
+
             self.publish()
         except Exception as er:
             logger.warn(f"Received content from s3 was not json {er}")
