@@ -52,7 +52,7 @@ class LambdaHandler():
                 event = args[1]
                 context = args[2]
                 econtext = event.get('requestContext',{})
-                requestId = str(econtext.get('requestId'))
+                requestId = str(econtext.get('requestId',{}))
                 traceId = event.get("headers",{}).get("X-Amzn-Trace-Id")
                 cfId = event.get("headers",{}).get("X-Amz-Cf-Id")
                 selfObj.addToLogger("requestId",requestId)
