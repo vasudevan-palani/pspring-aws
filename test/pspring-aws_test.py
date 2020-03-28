@@ -1,6 +1,6 @@
 import sys
-sys.path.append("./deps")
-sys.path.append("../../")
+sys.path.insert(0,"./deps")
+sys.path.insert(0,"../../")
 import os
 import time
 
@@ -11,6 +11,8 @@ secretId = "XXX"
 import pspringaws
 from appsyncclient import AppSyncClient
 import json
+
+from pspring import *
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -33,19 +35,19 @@ logging.basicConfig(level=logging.DEBUG)
 #     response = table.get("test",column="firstname",scope="test")
 #     assert response=="vas"
 
-def test_realtimedynamoconfigprovider():
-    configProvider = pspringaws.RealTimeDynamodbConfigProvider(
-        tableName="XXX",
-        primaryKey="test5",
-        primaryKeyName="name",
-        sortKeyName="scope",
-        sortKey="test5",
-        configColumnName="data",
-        tableAsConfig="True",
-        apiId="XXX"
-    )
-    time.sleep(200)
-    assert configProvider.getProperty("firstname") == "vasudevan"
+# def test_realtimedynamoconfigprovider():
+#     configProvider = pspringaws.RealTimeDynamodbConfigProvider(
+#         tableName="XXX",
+#         primaryKey="test5",
+#         primaryKeyName="name",
+#         sortKeyName="scope",
+#         sortKey="test5",
+#         configColumnName="data",
+#         tableAsConfig="True",
+#         apiId="XXX"
+#     )
+#     time.sleep(200)
+#     assert configProvider.getProperty("firstname") == "vasudevan"
 
 # def test_dynamoconfigprovider():
 #     configProvider = pspringaws.DynamodbConfigProvider(
@@ -58,9 +60,21 @@ def test_realtimedynamoconfigprovider():
 #     )
 #     assert configProvider.getProperty("visitorId")!=None
 
-# def test_s3configprovider():
-#     configProvider = pspringaws.S3ConfigProvider(bucketId="XXX",objectKey="XXX")
-#     assert configProvider.getProperty("XXX")!=None
+def test_s3configprovider():
+    configProvider = pspringaws.S3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="test/config.json")
+    print(configProvider.getProperty("xoe_statusPublisher.csg"))
+    assert configProvider.getProperty("xoe_statusPublisher.csg")!=None
+
+
+# def test_s3configprovidertimeout():
+    
+#     Configuration.initialize([pspringaws.S3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="xoe-digital-essentials-api/config.json")])
+#     config = Configuration.getConfig(__name__)
+    
+#     assert config.getProperty("payment_channel")!=None
+#     time.sleep(3)
+#     assert config.getProperty("payment_channel")!=None
+
 
 # def test_realtimes3configprovider():
 #     configProvider = pspringaws.RealTimeS3ConfigProvider(bucketId="XXX",objectKey="XXX.json")

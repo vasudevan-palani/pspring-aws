@@ -13,9 +13,20 @@ class S3ConfigProvider(ConfigurationProvider):
         self.objectKey = kargs.get("objectKey") or config.getProperty("objectKey")
         self.region = kargs.get("region") or config.getProperty("region")
         self.subscriptions = []
+        self.config={}
         self.refresh()
 
     def getProperty(self,propertyName):
+        # Check for json based keys
+        config = self.config
+        propertyNames = propertyName.split(".")
+        for propertyNameItem in propertyNames:
+            config = config.get(propertyNameItem)
+
+        if config != None:
+            return config
+
+        # return default way of property access
         return self.config.get(propertyName)
 
     def refresh(self):
