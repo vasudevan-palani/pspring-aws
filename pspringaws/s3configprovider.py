@@ -21,7 +21,8 @@ class S3ConfigProvider(ConfigurationProvider):
         config = self.config
         propertyNames = propertyName.split(".")
         for propertyNameItem in propertyNames:
-            config = config.get(propertyNameItem)
+            if config != None:
+                config = config.get(propertyNameItem)
 
         if config != None:
             return config
@@ -38,6 +39,7 @@ class S3ConfigProvider(ConfigurationProvider):
 
             if extn and extn == '.json':
                 self.config = json.loads(str(filecontent))
+                logger.info(f"Loaded S3 file s3://{self.bucketId}/{self.objectKey} : {self.config}")
             elif extn and extn in ['.yml', '.yaml']:
                 self.config = yaml.safe_load(filecontent)
             else:
