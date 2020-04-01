@@ -18,7 +18,7 @@ class SecretsMgrConfigProvider(ConfigurationProvider):
 
     def refresh(self):
         self.secretValue = self.mgr.getSecretValue()
-        self.publish()
+        #self.publish()
 
     def subscribe(self,callback):
         self.subscriptions.append(callback)

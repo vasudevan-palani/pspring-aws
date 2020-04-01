@@ -46,7 +46,7 @@ class S3ConfigProvider(ConfigurationProvider):
                 logger.error('File type {} not supported.'.format(extn))
                 raise Exception('File type {} not supported.'.format(extn))
 
-            self.publish()
+            #self.publish()
         except Exception as er:
             logger.warn(f"Received content from s3 was not json {er}")
 
