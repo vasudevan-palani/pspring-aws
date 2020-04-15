@@ -17,7 +17,7 @@ class S3ConfigProvider(ConfigurationProvider):
         self.config={}
         self.refresh()
         self.lastUpdated = int(datetime.now().timestamp())
-        self.timeout = config.getProperty("PSPRING_AWS_S3_CONFIG_TIMEOUT") or config.getProperty("PSPRING_CONFIG_TIMEOUT")
+        self.timeout = config.getProperty("timeout") or config.getProperty("PSPRING_AWS_S3_CONFIG_TIMEOUT") or config.getProperty("PSPRING_CONFIG_TIMEOUT")
 
     def checkForRefresh(self):
         lastUpdatedSeconds = int(datetime.now().timestamp()) - self.lastUpdated
