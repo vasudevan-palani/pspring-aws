@@ -3,6 +3,7 @@ import logging,json
 import yaml
 import os
 import boto3
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 config = Configuration.getConfig(__name__)
@@ -15,8 +16,17 @@ class S3ConfigProvider(ConfigurationProvider):
         self.subscriptions = []
         self.config={}
         self.refresh()
+        self.lastUpdated = int(datetime.now().timestamp())
+        self.timeout = config.getProperty("PSPRING_AWS_S3_CONFIG_TIMEOUT") or config.getProperty("PSPRING_CONFIG_TIMEOUT")
+
+    def checkForRefresh(self):
+        lastUpdatedSeconds = int(datetime.now().timestamp()) - self.lastUpdated
+        if(self.timeout != None and lastUpdatedSeconds > int(self.timeout)):
+            self.lastUpdated = int(datetime.now().timestamp())
+            self.refresh()
 
     def getProperty(self,propertyName):
+        self.checkForRefresh()
         # Check for json based keys
         config = self.config
         propertyNames = propertyName.split(".")
@@ -46,7 +56,7 @@ class S3ConfigProvider(ConfigurationProvider):
                 logger.error('File type {} not supported.'.format(extn))
                 raise Exception('File type {} not supported.'.format(extn))
 
-            #self.publish()
+            self.publish()
         except Exception as er:
             logger.warn(f"Received content from s3 was not json {er}")
 
