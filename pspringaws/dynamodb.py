@@ -16,14 +16,44 @@ class DynamoDBTable():
         self.region = kargs.get("region") or config.getProperty("region")
         self.ttlcolumnname = kargs.get("ttlColumnName") or config.getProperty("ttlColumnName")
         self.ttl = int(kargs.get("ttl") or config.getProperty("ttl"))
+        self.init()
+
+    def init(self):
         dynamodb = boto3.resource("dynamodb",region_name=self.region)
         self.table = dynamodb.Table(self.tableName)
+
 
     def __call__(self,classObj):
         def put(selfObj,data):
             if(self.ttlcolumnname != None and data.get(self.ttlcolumnname) == None):
                 data[self.ttlcolumnname] = int(time.time())+self.ttl
             self.table.put_item(Item=data)
+
+        def update(selfObj,data):
+            key = {}
+            updateExpressionItems = {}
+            expressionAttributeValues = {}
+            key[self.primaryKey] = data.get(self.primaryKey)
+            if self.sortKey != None:
+                key[self.sortKey] = data.get(self.sortKey)
+
+            for attribute in data:
+                if attribute != self.primaryKey and attribute != self.sortKey:
+                    updateExpressionItems[attribute]=f":{attribute}"
+                    expressionAttributeValues[f":{attribute}"] = attribute
+
+            updateExpression = "SET "
+            firstItem = True
+            for item in updateExpressionItems.items():
+                if firstItem == True:
+                    updateExpression = f"{updateExpression} {item[0]} = {item[1]}"
+                else:
+                    updateExpression = f"{updateExpression}, {item[0]} = {item[1]}"
+
+            return selfObj.__update__(key,updateExpression,expressionAttributeValues)
+
+        def __update__(selfObj,key,updateExpression,expressionAttributeValues):
+            return self.table.update_item(Key=key,UpdateExpression = updateExpression,ExpressionAttributeValues=expressionAttributeValues,ReturnValues="UPDATED_NEW")
 
         def get(selfObj,primaryKey,**kargs):
             key = {}
@@ -50,4 +80,5 @@ class DynamoDBTable():
             return item
         classObj.put = put
         classObj.get = get
+        classObj.update = update
         return classObj

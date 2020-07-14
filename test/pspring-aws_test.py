@@ -60,11 +60,34 @@ logging.basicConfig(level=logging.DEBUG)
 #     )
 #     assert configProvider.getProperty("visitorId")!=None
 
-def test_s3configprovider():
-    configProvider = pspringaws.S3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="test/config.json")
-    print(configProvider.getProperty("xoe_statusPublisher.csg"))
-    assert configProvider.getProperty("xoe_statusPublisher.csg")!=None
+# def test_s3configprovider():
+#     configProvider = pspringaws.S3ConfigProvider(bucketId="soo-appconfig-dev",objectKey="test/config.json")
+#     print(configProvider.getProperty("xoe_statusPublisher.csg"))
+#     assert configProvider.getProperty("xoe_statusPublisher.csg")!=None
 
+
+def test_dynamodb_update():
+
+	def init(self):
+		pass
+	pspringaws.DynamoDBTable.init = init
+
+	@pspringaws.DynamoDBTable(tableName="testTable",primaryKey="name",sortKey="scope",ttlColumnName="ttl",region="us-east-1",ttl=100)
+	class TestTable():
+		pass
+
+	global updateExpression
+	updateExpression=None
+	def update(self,x,y,z):
+		global updateExpression
+		print(updateExpression)
+		updateExpression=y
+	TestTable.__update__ = update
+
+	table = TestTable()
+
+	table.update({"column1":"columnvalue1","name":"nameval","scope":"scopeval"})
+	assert updateExpression == "SET  column1 = :column1"
 
 # def test_s3configprovidertimeout():
     

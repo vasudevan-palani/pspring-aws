@@ -8,3 +8,5 @@ dist/
 test/.tmp/
 .pytest_cache/
 __pycache__/
+.idea/
+.tmp/
