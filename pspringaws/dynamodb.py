@@ -34,13 +34,13 @@ class DynamoDBTable():
             updateExpressionItems = {}
             expressionAttributeValues = {}
             key[self.primaryKey] = data.get(self.primaryKey)
-            if self.sortKey != None:
+            if self.sortKey != '' and self.sortKey != None:
                 key[self.sortKey] = data.get(self.sortKey)
 
             for attribute in data:
                 if attribute != self.primaryKey and attribute != self.sortKey:
                     updateExpressionItems[attribute]=f":{attribute}"
-                    expressionAttributeValues[f":{attribute}"] = attribute
+                    expressionAttributeValues[f":{attribute}"] = data.get(attribute)
 
             updateExpression = "SET "
             firstItem = True
