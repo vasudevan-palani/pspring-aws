@@ -81,4 +81,5 @@ class DynamoDBTable():
         classObj.put = put
         classObj.get = get
         classObj.update = update
+        classObj.__update__ = __update__
         return classObj
