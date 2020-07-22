@@ -33,14 +33,16 @@ class DynamoDBTable():
             key = {}
             updateExpressionItems = {}
             expressionAttributeValues = {}
+            expressionAttributeNames = {}
             key[self.primaryKey] = data.get(self.primaryKey)
             if self.sortKey != '' and self.sortKey != None:
                 key[self.sortKey] = data.get(self.sortKey)
 
             for attribute in data:
                 if attribute != self.primaryKey and attribute != self.sortKey:
-                    updateExpressionItems[attribute]=f":{attribute}"
+                    updateExpressionItems[f"#{attribute}"]=f":{attribute}"
                     expressionAttributeValues[f":{attribute}"] = data.get(attribute)
+                    expressionAttributeNames[f"#{attribute}"] = attribute
 
             updateExpression = "SET "
             firstItem = True
@@ -50,10 +52,10 @@ class DynamoDBTable():
                 else:
                     updateExpression = f"{updateExpression}, {item[0]} = {item[1]}"
 
-            return selfObj.__update__(key,updateExpression,expressionAttributeValues)
+            return selfObj.__update__(key,updateExpression,expressionAttributeValues,expressionAttributeNames)
 
-        def __update__(selfObj,key,updateExpression,expressionAttributeValues):
-            return self.table.update_item(Key=key,UpdateExpression = updateExpression,ExpressionAttributeValues=expressionAttributeValues,ReturnValues="UPDATED_NEW")
+        def __update__(selfObj,key,updateExpression,expressionAttributeValues,expressionAttributeNames):
+            return self.table.update_item(Key=key,UpdateExpression = updateExpression,ExpressionAttributeValues=expressionAttributeValues,ExpressionAttributeNames=expressionAttributeNames,ReturnValues="UPDATED_NEW")
 
         def get(selfObj,primaryKey,**kargs):
             key = {}
