@@ -55,7 +55,7 @@ class DynamoDBTable():
             return selfObj.__update__(key,updateExpression,expressionAttributeValues,expressionAttributeNames)
 
         def __update__(selfObj,key,updateExpression,expressionAttributeValues,expressionAttributeNames):
-            return self.table.update_item(Key=key,UpdateExpression = updateExpression,ExpressionAttributeValues=expressionAttributeValues,ExpressionAttributeNames=expressionAttributeNames,ReturnValues="UPDATED_NEW")
+            return self.table.update_item(Key=key,UpdateExpression = updateExpression,ExpressionAttributeValues=expressionAttributeValues,ExpressionAttributeNames=expressionAttributeNames,ReturnValues="ALL_NEW")
 
         def get(selfObj,primaryKey,**kargs):
             key = {}
