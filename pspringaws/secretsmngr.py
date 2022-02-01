@@ -21,6 +21,10 @@ class SecretsManager():
         self.secretResponse = self.getSecret()
         logger.info("Secret status : OK")
 
+    def getRefreshedSecretValue(self):
+        self.secretResponse = self.getSecret()
+        return self.getSecretValue()
+
     def getSecret(self):
         return self.client.get_secret_value(SecretId=self.secretId)
 
