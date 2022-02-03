@@ -10,3 +10,4 @@ test/.tmp/
 __pycache__/
 .idea/
 .tmp/
+.vscode
