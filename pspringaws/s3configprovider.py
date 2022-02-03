@@ -4,6 +4,7 @@ import yaml
 import os
 import boto3
 from datetime import datetime
+from threading import Thread
 
 logger = logging.getLogger(__name__)
 config = Configuration.getConfig(__name__)
@@ -22,8 +23,18 @@ class S3ConfigProvider(ConfigurationProvider):
     def checkForRefresh(self):
         lastUpdatedSeconds = int(datetime.now().timestamp()) - self.lastUpdated
         if(self.timeout != None and lastUpdatedSeconds > int(self.timeout)):
+            logger.info({
+                "event": "trace",
+                "message": "Auto refreshing S3 config.",
+                "data": {
+                    "bucketId": self.bucketId,
+                    "objectKey": self.objectKey,
+                    "region": self.region,
+                    "refreshTimeout": self.timeout
+                }
+            })
             self.lastUpdated = int(datetime.now().timestamp())
-            self.refresh()
+            Thread(target=self.refresh).start()
 
     def getProperty(self,propertyName):
         self.checkForRefresh()
@@ -49,16 +60,63 @@ class S3ConfigProvider(ConfigurationProvider):
 
             if extn and extn == '.json':
                 self.config = json.loads(str(filecontent))
-                logger.info(f"Loaded S3 file s3://{self.bucketId}/{self.objectKey} : {self.config}")
+                logger.info({
+                    "event": "trace",
+                    "message": "Loaded S3 JSON config.",
+                    "data": {
+                        "bucketId": self.bucketId,
+                        "objectKey": self.objectKey,
+                        "region": self.region,
+                        "config": self.config
+                    }
+                })
+
             elif extn and extn in ['.yml', '.yaml']:
                 self.config = yaml.safe_load(filecontent)
+
+                logger.info({
+                    "event": "trace",
+                    "message": "Loaded S3 YAML config.",
+                    "data": {
+                        "bucketId": self.bucketId,
+                        "objectKey": self.objectKey,
+                        "region": self.region,
+                        "config": self.config
+                    }
+                })
             else:
-                logger.error('File type {} not supported.'.format(extn))
+                logger.error({
+                    "event": "error",
+                    "message": f'File type {extn} not supported.',
+                    "data": {
+                        "bucketId": self.bucketId,
+                        "objectKey": self.objectKey,
+                        "region": self.region
+                    }
+                })
                 raise Exception('File type {} not supported.'.format(extn))
 
             self.publish()
         except Exception as er:
-            logger.warn(f"Received content from s3 was not json {er}")
+            logger.warning({
+                "event": "warning",
+                "message": f"Received content from s3 was not json {er}",
+                "data": {
+                    "bucketId": self.bucketId,
+                    "objectKey": self.objectKey,
+                    "region": self.region
+                }
+            })
+
+        logger.info({
+            "event": "trace",
+            "message": "Refreshed S3 config.",
+            "data": {
+                "bucketId": self.bucketId,
+                "objectKey": self.objectKey,
+                "region": self.region
+            }
+        })
 
     def subscribe(self,callback):
         self.subscriptions.append(callback)

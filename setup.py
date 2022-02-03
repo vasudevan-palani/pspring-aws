@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=['pspringaws'],
-    install_requires=['boto3>1.9','pspring>=0.0.1','realtime-aws-secretsmngr>=0.0.3', 'PyYAML>=5.3'],
+    install_requires=['boto3>1.9','pspring>=0.0.1','realtime-aws-secretsmngr>=0.0.3', 'PyYAML>=5.3', 'moto'],
     include_package_data=True,
     description="A framework to do a better development.",
 )
