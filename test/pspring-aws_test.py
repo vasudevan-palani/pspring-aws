@@ -78,7 +78,7 @@ def test_dynamodb_update():
 
 	global updateExpression
 	updateExpression=None
-	def update(self,x,y,z):
+	def update(self,x,y,z,a):
 		global updateExpression
 		print(updateExpression)
 		updateExpression=y
@@ -87,7 +87,7 @@ def test_dynamodb_update():
 	table = TestTable()
 
 	table.update({"column1":"columnvalue1","name":"nameval","scope":"scopeval"})
-	assert updateExpression == "SET  column1 = :column1"
+	assert updateExpression == "SET  #column1 = :column1"
 
 # def test_s3configprovidertimeout():
     
